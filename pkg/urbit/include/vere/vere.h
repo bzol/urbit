@@ -1228,6 +1228,13 @@
         u3_auto*
         u3_hind_io_init(u3_pier* pir_u);
 
+    /**  loop, opengl integration.
+    **/
+      /* u3_loop_io_init(): initialize loop
+      */
+        u3_auto*
+        u3_loop_io_init(u3_pier* pir_u);
+
     /**  Stream messages.
     **/
       /* u3_newt_decode(): decode a (partial) length-prefixed byte buffer
