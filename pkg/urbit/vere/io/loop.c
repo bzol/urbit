@@ -40,6 +40,7 @@ _loop_born_bail(u3_ovum* egg_u, u3_noun lud)
 static void
 _loop_io_talk(u3_auto* car_u)
 {
+	printf("loop talk \r\n");
   u3_loop* lop_u = (u3_loop*)car_u;
 
   //  XX remove [sev_l]
@@ -61,6 +62,7 @@ _loop_io_talk(u3_auto* car_u)
 static c3_o
 _loop_io_kick(u3_auto* car_u, u3_noun wir, u3_noun cad)
 {
+	printf("loop kick \r\n");
   u3_loop* lop_u = (u3_loop*)car_u;
 
   c3_o ret_o = c3y;
@@ -73,6 +75,7 @@ _loop_io_kick(u3_auto* car_u, u3_noun wir, u3_noun cad)
 static void
 _loop_io_exit(u3_auto* car_u)
 {
+	printf("loop exit \r\n");
   u3_loop* lop_u = (u3_loop*)car_u;
   /* uv_close((uv_handle_t*)&teh_u->tim_u, (uv_close_cb)_loop_exit_cb); */
 }
@@ -82,6 +85,7 @@ _loop_io_exit(u3_auto* car_u)
 u3_auto*
 u3_loop_io_init(u3_pier* pir_u)
 {
+	printf("loop init \r\n");
   u3_loop* lop_u = c3_calloc(sizeof(*lop_u));
 
   /* uv_timer_init(u3L, &teh_u->tim_u); */
