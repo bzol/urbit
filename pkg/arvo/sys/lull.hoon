@@ -2262,23 +2262,16 @@
 ++  loop  ^?
   |%
   +$  gift                                              ::  out result <-$
-    $%  [%doze p=(unit @da)]                            ::  next alarm
-        [%wake error=(unit tang)]                       ::  wakeup or failed
-        [%meta p=vase]
-        [%heck syn=sign-arvo]                           ::  response to %huck
+    $%  
+        [%back out=@t]                                ::  gall -> loop
+        [%draw out=@t]                                ::  loop -> unix
     ==
   +$  task                                              ::  in request ->$
-    $~  [%vega ~]                                       ::
-    $%  $>(%born vane-task)                             ::  new unix process
-        [%rest p=@da]                                   ::  cancel alarm
-        [%drip p=vase]                                  ::  give in next event
-        [%huck syn=sign-arvo]                           ::  give back
-        $>(%trim vane-task)                             ::  trim state
-        $>(%vega vane-task)                             ::  report upgrade
-        [%wait p=@da]                                   ::  set alarm
-        [%wake ~]                                       ::  timer activate
+    $%  
+        [%load in=@t]                                 ::  unix -> loop
+        [%next in=@t]                                 ::  loop -> gall
     ==
-  --  ::behn
+  --  ::loop
 ::
 ++  rand                                                ::  computation
   |%
@@ -2481,6 +2474,7 @@
       gift:iris
       gift:jael
       gift:khan
+      gift:loop
   ==
 +$  task-arvo                                           ::  in request ->$
   $%  task:ames
@@ -2492,6 +2486,7 @@
       task:iris
       task:jael
       task:khan
+      task:loop
   ==
 +$  note-arvo                                           ::  out request $->
   $~  [%b %wake ~]
@@ -2504,6 +2499,7 @@
       [%i task:iris]
       [%j task:jael]
       [%k task:khan]
+      [%l task:loop]
       [%$ %whiz ~]
       [@tas %meta vase]
   ==
@@ -2526,6 +2522,7 @@
       [%iris gift:iris]
       [%jael gift:jael]
       [%khan gift:khan]
+      [%loop gift:loop]
   ==
 ::  $unix-task: input from unix
 ::
