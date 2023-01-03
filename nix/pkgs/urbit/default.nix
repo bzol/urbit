@@ -1,4 +1,9 @@
 { lib, stdenv, coreutils, pkgconfig                      # build/env
+# opengl
+, libGL, libGLU
+, fetchFromGitHub, autoreconfHook, wxGTK30, lua5_1, curl
+, libpng, xorg, flam3, libgtop, boost, tinyxml, freeglut, mesa, glee
+########
 , cacert, ca-bundle, ivory                               # codegen
 , curlUrbit, ent, gmp, h2o, libsigsegv, libuv, lmdb      # libs
 , murmur3, openssl, openssl-static-osx, softfloat3       #
@@ -46,6 +51,21 @@ in stdenv.mkDerivation {
     softfloat3
     urcrypt
     (if stdenv.isDarwin && enableStatic then zlib-static-osx else zlib)
+		#  opengl
+		wxGTK30 
+		lua5_1
+		curl
+		libpng 
+		xorg.libXrender
+    flam3 
+		libgtop 
+		boost 
+		tinyxml 
+		freeglut 
+		mesa 
+		glee
+		libGL
+		libGLU
   ];
 
   # Ensure any `/usr/bin/env bash` shebang is patched.
