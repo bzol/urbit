@@ -61,11 +61,10 @@ in stdenv.mkDerivation {
 		libgtop 
 		boost 
 		tinyxml 
-		freeglut 
-		mesa 
-		glee
-		libGL
-		libGLU
+		#freeglut 
+		#glee
+		#libGL
+		#libGLU
   ];
 
   # Ensure any `/usr/bin/env bash` shebang is patched.
