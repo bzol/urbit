@@ -100,6 +100,8 @@ let
 
     marsSources = callPackage ./nix/pkgs/marsSources { };
 
+    freeglut = callPackage ./nix/pkgs/freeglut { };
+
     urbit = callPackage ./nix/pkgs/urbit { inherit enableStatic verePace; };
 
     urcrypt = callPackage ./nix/pkgs/urcrypt { inherit enableStatic; };
