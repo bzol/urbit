@@ -551,6 +551,7 @@
     %kiln-rm                 =;(f (f !<(_+<.f vase)) poke-rm)
     %kiln-schedule           =;(f (f !<(_+<.f vase)) poke-schedule)
     %kiln-suspend            =;(f (f !<(_+<.f vase)) poke-suspend)
+    %kiln-suspend-many       =;(f (f !<(_+<.f vase)) poke-suspend-many)
     %kiln-sync               =;(f (f !<(_+<.f vase)) poke-sync)
     %kiln-syncs              =;(f (f !<(_+<.f vase)) poke-syncs)
     %kiln-uninstall          =;(f (f !<(_+<.f vase)) poke-uninstall)
@@ -583,15 +584,13 @@
     ..abet
   =/  kel  i.wic
   %-  emil
-  =/  cards
+  =/  desks=(list [=desk =zest])
     %+  murn  ~(tap by rock)
     |=  [=desk =zest wic=(set weft)]
     ?:  |(=(%base desk) !?=(%live zest) (~(has in wic) kel))
       ~
-    `u=[%pass /kiln/bump/[desk] %arvo %c %zest desk %held]
-  ?~  cards
-    [%pass /kiln/bump/wick %arvo %c %wick ~]~
-  cards
+    `u=[desk %held]
+  [%pass /kiln/bump/zeal %arvo %c %zeal desks]~
 ::
 ++  poke-cancel
   |=  a=@tas
@@ -787,7 +786,19 @@
 ::
 ++  poke-suspend
   |=  =desk
-  abet:(emit %pass /kiln/suspend %arvo %c %zest desk %dead)
+  (poke-suspend-many ~[desk])
+::
+++  poke-suspend-many
+  |=  desks=(list desk)
+  =<  abet
+  %-  emil
+  %+  turn
+    %+  skim  desks
+    |=  dek=desk
+    ?:  (~(has in .^((set desk) %cd /(scot %p our)/base/(scot %da now))) dek)
+      &  
+    ~>  %slog.(fmt "desk does not yet exist: {<dek>}")  |   
+  |=(=desk [%pass /kiln/suspend %arvo %c %zest desk %dead])
 ::
 ++  poke-sync
   |=  hos=kiln-sync
@@ -807,10 +818,16 @@
 ::
 ++  poke-uninstall
   |=  loc=desk
-  ?~  got=(~(get by sources) loc)
+  =+  .^(=rock:tire %cx /(scot %p our)//(scot %da now)/tire)
+  ?~  got=(~(get by rock) loc)
+    abet:(spam leaf+"desk does not exist: {<loc>}" ~)
+  ?:  =(+<:got %dead)
     abet:(spam leaf+"desk not installed: {<loc>}" ~)
+  ~>  %slog.(fmt "uninstalling {<loc>}")
   =.  ..on-init  (emit %pass /kiln/uninstall %arvo %c %zest loc %dead)
-  (poke-unsync loc u.got)
+  ?~  sync=(~(get by sources) loc)
+    abet
+  (poke-unsync loc u.sync)
 ::
 ++  poke-unmount
   |=  mon=kiln-unmount
@@ -1095,6 +1112,7 @@
     %+  lard  /init
     =/  m  (strand:rand ,vase)
     ;<  =riot:clay  bind:m  (warp:strandio her sud ~ %sing %y ud+1 /)
+    ?>  ?=(^ riot)
     ~>  %slog.(fmt "activated install into {here}")
     ;<  now=@da     bind:m  get-time:strandio
     ;<  =riot:clay  bind:m  (warp:strandio her sud ~ %sing %w da+now /)
@@ -1109,6 +1127,7 @@
     %+  lard  /next
     =/  m  (strand:rand ,vase)
     ;<  =riot:clay  bind:m  (warp:strandio her sud ~ %sing %w ud+let /)
+    ?>  ?=(^ riot)
     ~>  %slog.(fmt "downloading update for {here}")
     ;<  =riot:clay  bind:m  (warp:strandio her sud ~ %sing %v ud+let /)
     ?>  ?=(^ riot)
@@ -1176,14 +1195,6 @@
     ::
         %main
       ?>  ?=(%mere +<.sign-arvo)
-      ::  This case is maintained by superstition.  If you remove it,
-      ::  carefully test that if the source ship is breached, we
-      ::  correctly reset let to 0
-      ::
-      ?:  ?=([%| %ali-unavailable *] p.sign-arvo)
-        =+  "kiln: merge into {here} failed, maybe because sunk; restarting"
-        %-  (slog leaf/- p.p.sign-arvo)
-        init
       ?:  ?=(%| -.p.sign-arvo)
         =+  "kiln: merge into {here} failed, waiting for next revision"
         %-  (slog leaf/- p.p.sign-arvo)
@@ -1200,12 +1211,6 @@
       ?>  ?=(%mere +<.sign-arvo)
       ?~  kid
         ..abet
-      ::  See %main for this case
-      ::
-      ?:  ?=([%| %ali-unavailable *] p.sign-arvo)
-        =+  "kids merge to {<u.kid>} failed, maybe peer sunk; restarting"
-        ~>  %slog.(fmt -)
-        init
       ::  Just notify; we've already started listening for the next
       ::  version
       ::

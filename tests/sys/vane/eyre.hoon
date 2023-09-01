@@ -7,27 +7,14 @@
 ::
 |%
 ++  test-init
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
-  ::
-  results1
+  -:perform-init
+::
+++  test-born
+  -:(perform-born eyre-gate)
 ::
 ++  test-overwrite-bindings
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
   ::  app1 binds successfully
   ::
   =^  results2  eyre-gate
@@ -57,14 +44,7 @@
 ::
 ++  test-remove-binding
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
   ::  app1 binds successfully
   ::
   =^  results2  eyre-gate
@@ -130,14 +110,7 @@
 ::
 ++  test-builtin-four-oh-four
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
   ::  when there's no configuration and nothing matches, expect 404
   ::
   =^  results2  eyre-gate
@@ -173,14 +146,7 @@
 ::
 ++  test-basic-app-request
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
   ::  app1 binds successfully
   ::
   =^  results2  eyre-gate
@@ -266,14 +232,7 @@
 ::
 ++  test-app-error
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
   ::  app1 binds successfully
   ::
   =^  results2  eyre-gate
@@ -369,14 +328,7 @@
 ::
 ++  test-multipart-app-request
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
   ::  app1 binds successfully
   ::
   =^  results2  eyre-gate
@@ -484,17 +436,11 @@
 ::
 ++  test-login-handler-full-path
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
+  =^  results2  eyre-gate  (perform-born eyre-gate)
   ::  app1 binds successfully
   ::
-  =^  results2  eyre-gate
+  =^  results3  eyre-gate
     %-  eyre-call  :*
       eyre-gate
       now=~1111.1.2
@@ -504,7 +450,7 @@
     ==
   ::  outside requests a path that app1 has bound to
   ::
-  =^  results3  eyre-gate
+  =^  results4  eyre-gate
     %-  eyre-call-with-comparator  :*
       eyre-gate
       now=~1111.1.3
@@ -550,7 +496,7 @@
     ==
   ::  app then gives a redirect to Eyre
   ::
-  =^  results4  eyre-gate
+  =^  results5  eyre-gate
     %-  eyre-take  :*
       eyre-gate
       now=~1111.1.4
@@ -569,7 +515,7 @@
     ==  ==  ==
   ::  the browser then fetches the login page
   ::
-  =^  results5  eyre-gate
+  =^  results6  eyre-gate
     %-  perform-authentication  :*
       eyre-gate
       now=~1111.1.5
@@ -577,7 +523,7 @@
     ==
   ::  going back to the original url will acknowledge the authentication cookie
   ::
-  =^  results6  eyre-gate
+  =^  results7  eyre-gate
     %-  eyre-call-with-comparator  :*
       eyre-gate
       now=~1111.1.5..1.0.0
@@ -644,18 +590,12 @@
     results4
     results5
     results6
+    results7
   ==
 ::
 ++  test-generator
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
   ::  gen1 binds successfully
   ::
   =^  results2  eyre-gate
@@ -703,17 +643,30 @@
       !>  (rush '192.168.1.1' simplified-url-parser:eyre-gate)
   ==
 ::
-++  test-parse-channel-request
+++  test-parse-channel-request-jam
   ;:  weld
     %+  expect-eq
-      !>  `[%ack 5]~
-      !>  %-  parse-channel-request:eyre-gate
-          (need (de-json:html '[{"action": "ack", "event-id": 5}]'))
+      !>  &+[%ack 5]~
+      !>  %+  parse-channel-request:eyre-gate  %jam
+          (as-octs:mimes:html (scot %uw (jam [%ack 5]~)))
   ::
     %+  expect-eq
-      !>  `[%poke 0 ~nec %app1 %app-type [%n '5']]~
-      !>  %-  parse-channel-request:eyre-gate
-          %-  need  %-  de-json:html
+      !>  |+'invalid request data'
+      !>  %+  parse-channel-request:eyre-gate  %jam
+          (as-octs:mimes:html (scot %uw (jam [%not %a %chanreq %list])))
+  ==
+::
+++  test-parse-channel-request-json
+  ;:  weld
+    %+  expect-eq
+      !>  &+[%ack 5]~
+      !>  %+  parse-channel-request:eyre-gate  %json
+          (as-octs:mimes:html '[{"action": "ack", "event-id": 5}]')
+  ::
+    %+  expect-eq
+      !>  &+[%poke-json 0 ~nec %app1 %app-type [%n '5']]~
+      !>  %+  parse-channel-request:eyre-gate  %json
+          %-  as-octs:mimes:html
           '''
           [{"action": "poke",
             "id": 0,
@@ -724,9 +677,9 @@
           '''
   ::
     %+  expect-eq
-      !>  `[%subscribe 1 ~sampyl-sipnym %hall /this/path]~
-      !>  %-  parse-channel-request:eyre-gate
-          %-  need  %-  de-json:html
+      !>  &+[%subscribe 1 ~sampyl-sipnym %hall /this/path]~
+      !>  %+  parse-channel-request:eyre-gate  %json
+          %-  as-octs:mimes:html
           '''
           [{"action": "subscribe",
             "id": 1,
@@ -736,9 +689,9 @@
           '''
   ::
     %+  expect-eq
-      !>  `[%unsubscribe 2 1]~
-      !>  %-  parse-channel-request:eyre-gate
-          %-  need  %-  de-json:html
+      !>  &+[%unsubscribe 2 1]~
+      !>  %+  parse-channel-request:eyre-gate  %json
+          %-  as-octs:mimes:html
           '''
           [{"action": "unsubscribe",
             "id": 2,
@@ -746,30 +699,30 @@
           '''
   ::
       %+  expect-eq
-        !>  ~
-        !>  %-  parse-channel-request:eyre-gate
-            %-  need  %-  de-json:html
+        !>  |+'invalid channel json'
+        !>  %+  parse-channel-request:eyre-gate  %json
+            %-  as-octs:mimes:html
             '[{"noaction": "noaction"}]'
   ::
       %+  expect-eq
-        !>  ~
-        !>  %-  parse-channel-request:eyre-gate
-            %-  need  %-  de-json:html
+        !>  |+'invalid channel json'
+        !>  %+  parse-channel-request:eyre-gate  %json
+            %-  as-octs:mimes:html
             '[{"action": "bad-action"}]'
   ::
       %+  expect-eq
-        !>  ~
-        !>  %-  parse-channel-request:eyre-gate
-            %-  need  %-  de-json:html
+        !>  |+'invalid channel json'
+        !>  %+  parse-channel-request:eyre-gate  %json
+            %-  as-octs:mimes:html
             '[{"action": "ack", "event-id": 5}, {"action": "bad-action"}]'
   ::
       %+  expect-eq
-        !>  :-  ~
+        !>  :-  %&
             :~  [%ack 9]
-                [%poke 3 ~bud %wut %wut-type [%a [%n '2'] [%n '1'] ~]]
+                [%poke-json 3 ~bud %wut %wut-type [%a [%n '2'] [%n '1'] ~]]
             ==
-        !>  %-  parse-channel-request:eyre-gate
-            %-  need  %-  de-json:html
+        !>  %+  parse-channel-request:eyre-gate  %json
+            %-  as-octs:mimes:html
             '''
             [{"action": "ack", "event-id": 9},
              {"action": "poke",
@@ -783,14 +736,7 @@
 ::
 ++  test-channel-reject-unauthenticated
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
   ::
   =^  results2  eyre-gate
     %-  eyre-call  :*
@@ -1873,14 +1819,7 @@
 ::
 ++  test-born-sends-pending-cancels
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
   ::  app1 binds successfully
   ::
   =^  results2  eyre-gate
@@ -1951,15 +1890,15 @@
         |=  moves=(list move:eyre-gate)
         ^-  tang
         ::
-        ?.  ?=([^ ^ ~] moves)
+        ?.  ?=([^ ^ ^ ~] moves)
           [%leaf "wrong number of moves: {<(lent moves)>}"]~
         ::
-        ::  we don't care about the first one, which is just a static
-        ::  configuration move.
+        ::  we don't care about the first two, which are just
+        ::  configuration moves.
         ::
-        =/  move=move:eyre-gate                              i.t.moves
-        =/  =duct                                             duct.move
-        =/  card=(wind note:eyre-gate gift:eyre-gate)  card.move
+        =/  =move:eyre-gate  i.t.t.moves
+        =/  =duct             duct.move
+        =/  card              card.move
         ::
         %+  weld
           (expect-eq !>(~[/http-blah]) !>(duct))
@@ -2126,6 +2065,30 @@
   ::  todo: handle other deals
   ::
   [%leaf "unexpected %deal type"]~
+::  +perfom-init: %init a new eyre-gate
+::
+++  perform-init
+  %-  eyre-call  :*
+    eyre-gate
+    now=~1111.1.1
+    scry=scry-provides-code
+    call-args=[duct=~[/init] ~ [%init ~]]
+    expected-moves=~
+  ==
+::  +perform-born: %born an eyre-gate
+::
+++  perform-born
+  |=  =_eyre-gate
+  %-  eyre-call  :*
+    eyre-gate
+    new=~1111.1.1
+    scry=scry-provides-code
+    call-args=[duct=~[/unix] ~ [%born ~]]
+    ^=  expected-moves
+    :~  [duct=~[/unix] %give %set-config *http-config:eyre]
+        [duct=~[/unix] %give %sessions ~]
+    ==
+  ==
 ::  +perform-authentication: goes through the authentication flow
 ::
 ++  perform-authentication
@@ -2186,6 +2149,9 @@
             :-  duct=~[/http-blah]
             [%pass p=/sessions/expire q=[%b [%wait p=(add start-now ~d7.m1)]]]
           ::
+            =+  token='0v3.q0p7t.mlkkq.cqtto.p0nvi.2ieea'
+            [duct=~[/unix] %give %sessions [token ~ ~]]
+          ::
             :*  duct=~[/http-blah]
                 %give
                 %response
@@ -2209,17 +2175,11 @@
       ==
   ^-  [tang _eyre-gate]
   ::
-  =^  results1  eyre-gate
-    %-  eyre-call  :*
-      eyre-gate
-      now=~1111.1.1
-      scry=scry-provides-code
-      call-args=[duct=~[/init] ~ [%init ~]]
-      expected-moves=~
-    ==
+  =^  results1  eyre-gate  perform-init
+  =^  results2  eyre-gate  (perform-born eyre-gate)
   ::  ensure there's an authenticated session
   ::
-  =^  results2  eyre-gate
+  =^  results3  eyre-gate
     %-  perform-authentication  :*
       eyre-gate
       now=~1111.1.2
@@ -2227,7 +2187,7 @@
     ==
   ::  send the channel a poke and a subscription request
   ::
-  =^  results3  eyre-gate
+  =^  results4  eyre-gate
     %-  eyre-call-with-comparator  :*
       eyre-gate
       now=~1111.1.2
@@ -2293,7 +2253,7 @@
     ==  ==
   ::
   :_  eyre-gate
-  :(weld results1 results2 results3)
+  :(weld results1 results2 results3 results4)
 ::
 ++  scry-provides-code  ^-  roof
   |=  [gang =view =beam]

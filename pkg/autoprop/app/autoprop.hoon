@@ -1,5 +1,8 @@
 ::  autoprop: make pills & props when desk contents change
 ::
+::    link at the dojo command line:
+::      |link %autoprop
+::
 ::    auto-build a new .urb/put/latest-solid.pill:
 ::      +latest-solid solid %kids %garden
 ::
@@ -256,6 +259,7 @@
       %-  (slog 'on-wake vers failed' u.error.sign)
       [[next]~ this]
     ?:  =(rev vers)  [[next]~ this]
+    =.  vers  rev
     =/  tasks=(list @ta)  ~(tap in ~(key by make))
     =|  cards=(list card)
     |-
